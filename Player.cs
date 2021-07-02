@@ -14,7 +14,7 @@ namespace aTTH
         private float decceleration = 20f;
         private float maxFallSpeed = 10.0f;
         private float gravity = 9.8f;
-        private float jumpSpeed = 12f;
+        private float jumpSpeed = 6f;
         private Dictionary<string, bool> inputs = new Dictionary<string, bool>();
 
         public Player(Vector2 pos, Texture2D texture)
@@ -65,6 +65,12 @@ namespace aTTH
                 }
             }
 
+            if (inputs["m_jump"] && standing)
+            {
+                v_velocity = jumpSpeed * -1;
+                standing = false;
+            }
+
             if (v_velocity > maxFallSpeed)
             {
                 v_velocity = maxFallSpeed;
@@ -82,6 +88,7 @@ namespace aTTH
         {
             inputs["m_left"] = keyboardState.IsKeyDown(Keys.Left) || gamePadState.IsButtonDown(Buttons.DPadLeft);
             inputs["m_right"] = keyboardState.IsKeyDown(Keys.Right) || gamePadState.IsButtonDown(Buttons.DPadRight);
+            inputs["m_jump"] = keyboardState.IsKeyDown(Keys.Up);
         }
     }
 }

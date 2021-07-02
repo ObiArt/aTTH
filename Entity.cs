@@ -14,6 +14,7 @@ namespace aTTH
         /// </summary>
         public float v_velocity;
         public float h_velocity;
+        public bool standing = false;
 
         public bool collide = false;
         /// <summary>
@@ -32,7 +33,7 @@ namespace aTTH
 
         public virtual void Update(double dt)
         {
-
+            
         }
 
         public virtual void Control(GamePadState gamePadState, KeyboardState keyboardState)
@@ -42,6 +43,7 @@ namespace aTTH
 
         public virtual void CollissionCheck(List<Entity> entities)
         {
+            standing = false;
             for (int i = 0; i < entities.Count; i++)
             {
                 if (entities[i].collide)
@@ -81,6 +83,7 @@ namespace aTTH
                         {
                             v_velocity = 0;
                             position.Y = dirs[smallest];
+                            standing = true;
                         } else
                         {
                             h_velocity = 0;
