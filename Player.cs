@@ -15,13 +15,20 @@ namespace aTTH
         private float maxFallSpeed = 10.0f;
         private float gravity = 9.8f;
         private float jumpSpeed = 6f;
+        private bool flying = false;
         private Dictionary<string, bool> inputs = new Dictionary<string, bool>();
+
+        public Vector2 originalhalfsize;
+        public Vector2 quartersize;
 
         public Player(Vector2 pos, Texture2D texture)
         {
             position = pos;
             sprite = texture;
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
+            originalhalfsize = new Vector2(texture.Width / 2, texture.Height / 2);
+            halfsize = originalhalfsize;
+            quartersize = new Vector2(texture.Width / 4, texture.Width / 4); //not a typo - it's intended to be this way
 
             collide = false;
             collide_important = true;
@@ -38,6 +45,11 @@ namespace aTTH
             position.Y += v_velocity;
 
             v_velocity += gravity * (float)dt;
+
+            if (halfsize != originalhalfsize && !flying)
+            {
+                halfsize = originalhalfsize;
+            }
 
             if (inputs["m_left"] ^ inputs["m_right"]) { //we are not going anywhere if both directions are held
                 if (inputs["m_left"])
@@ -82,6 +94,8 @@ namespace aTTH
                 else
                     h_velocity = maxWalkSpeed * -1;
             }
+
+            prev_position = position;
         }
 
         public override void Control(GamePadState gamePadState, KeyboardState keyboardState)

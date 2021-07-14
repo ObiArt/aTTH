@@ -16,6 +16,7 @@ namespace aTTH
             sprite.SetData(data);
 
             origin = new Vector2(size.X / 2, size.Y / 2);
+            halfsize = new Vector2(size.X / 2, size.Y / 2);
 
             position = pos;
 
