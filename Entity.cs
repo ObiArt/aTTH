@@ -18,9 +18,14 @@ namespace aTTH
         /// </summary>
         public float v_velocity;
         public float h_velocity;
+        public Single angle = 0;
         public bool standing = false;
 
         public bool collide = false;
+        /// <summary>
+        /// Did entity collide in the previous frame?
+        /// </summary>
+        public bool collided = false;
         /// <summary>
         /// Is it important for this object to check if it collides with anything else (i.e. players, lasers)
         /// </summary>
@@ -41,7 +46,7 @@ namespace aTTH
             
         }
 
-        public virtual void Control(GamePadState gamePadState, KeyboardState keyboardState)
+        public virtual void Control(GamePadState gamePadState, KeyboardState keyboardState, MouseState mouseState)
         {
 
         }
@@ -49,6 +54,7 @@ namespace aTTH
         public virtual void CollissionCheck(List<Entity> entities)
         {
             standing = false;
+            collided = false;
             for (int i = 0; i < entities.Count; i++)
             {
                 if (entities[i].collide)
@@ -56,6 +62,8 @@ namespace aTTH
                     if ((Math.Abs(position.Y - entities[i].position.Y) < (halfsize.Y + entities[i].halfsize.Y) * Params._scale) 
                         & (Math.Abs(position.X - entities[i].position.X) < (halfsize.X + entities[i].halfsize.X) * Params._scale))
                     {
+                        collided = true;
+                        angle = 0;
                         //TODO: make it look less awful
                         List<float> dirs = new List<float>();
                         dirs.Add(entities[i].position.Y - (halfsize.Y + entities[i].halfsize.Y) * Params._scale);
@@ -101,7 +109,7 @@ namespace aTTH
 
         public virtual void Draw(SpriteBatch _spritebatch)
         {
-            _spritebatch.Draw(sprite, position, null, Color.White, 0, origin, Params._scale, SpriteEffects.None, 0);
+            _spritebatch.Draw(sprite, position, null, Color.White, angle, origin, Params._scale, SpriteEffects.None, 0);
         }
     }
 }

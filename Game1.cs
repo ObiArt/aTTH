@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace aTTH
 {
@@ -51,6 +52,7 @@ namespace aTTH
             double deltaTime = gameTime.ElapsedGameTime.TotalSeconds;
             KeyboardState keyboardState = Keyboard.GetState();
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            MouseState mouseState = Mouse.GetState(Window);
 
             if (gamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                 Exit();
@@ -64,7 +66,7 @@ namespace aTTH
                 }
                 if (Entities[i].controlable)
                 {
-                    Entities[i].Control(gamePadState, keyboardState);
+                    Entities[i].Control(gamePadState, keyboardState, mouseState);
                 }
             }
 
