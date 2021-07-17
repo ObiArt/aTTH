@@ -60,13 +60,13 @@ namespace aTTH
             for (int i = 0; i < Entities.Count; i++)
             {
                 Entities[i].Update(deltaTime);
-                if (Entities[i].collide_important)
-                {
-                    Entities[i].CollissionCheck(Entities);
-                }
                 if (Entities[i].controlable)
                 {
                     Entities[i].Control(gamePadState, keyboardState, mouseState);
+                }
+                if (Entities[i].collide_important)
+                {
+                    Entities[i].CollissionCheck(Entities);
                 }
             }
 

@@ -76,7 +76,6 @@ namespace aTTH
 
             if (!flying)
             {
-                flightCount = 0;
                 //fixing collission boxes after flight
                 if (halfsize != originalhalfsize)
                 {
@@ -130,10 +129,14 @@ namespace aTTH
                 }
             }
 
-            if (inputs["m_jump"] && standing)
+            if (standing)
             {
-                v_velocity = jumpSpeed * -1;
-                standing = false;
+                flightCount = 0;
+                if (inputs["m_jump"])
+                {
+                    v_velocity = jumpSpeed * -1;
+                    standing = false;
+                }
             }
 
             position.X += h_velocity;
