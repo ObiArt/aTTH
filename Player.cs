@@ -44,19 +44,18 @@ namespace aTTH
 
         public override void Update(double dt)
         {
-            position.X += h_velocity;
-            position.Y += v_velocity;
+            prev_position = position;
 
             if (flying)
                 flying = !standing && !collided;
 
-            if (halfsize != originalhalfsize && !flying)
-            {
-                halfsize = originalhalfsize;
-            }
-
             if (!flying)
             {
+                //fixing collission boxes after flight
+                if (halfsize != originalhalfsize)
+                {
+                    halfsize = originalhalfsize;
+                }
                 //gravity go brrr
                 v_velocity += gravity * (float)dt;
                 //starting to fly
@@ -85,6 +84,7 @@ namespace aTTH
                         h_velocity += acceleration * (float)dt;
                     }
                 }
+                //Deceleration
                 else if (h_velocity != 0)
                 {
                     float reduction = decceleration * (float)dt;
@@ -104,6 +104,18 @@ namespace aTTH
                         }
                     }
                 }
+                //Not allowing player to move too fast
+                if (v_velocity > maxFallSpeed)
+                {
+                    v_velocity = maxFallSpeed;
+                }
+                if (Math.Abs(h_velocity) > maxWalkSpeed)
+                {
+                    if (h_velocity > 0)
+                        h_velocity = maxWalkSpeed;
+                    else
+                        h_velocity = maxWalkSpeed * -1;
+                }
             }
 
             if (inputs["m_jump"] && standing)
@@ -112,19 +124,8 @@ namespace aTTH
                 standing = false;
             }
 
-            if (v_velocity > maxFallSpeed)
-            {
-                v_velocity = maxFallSpeed;
-            }
-            if (Math.Abs(h_velocity) > maxWalkSpeed)
-            {
-                if (h_velocity > 0)
-                    h_velocity = maxWalkSpeed;
-                else
-                    h_velocity = maxWalkSpeed * -1;
-            }
-
-            prev_position = position;
+            position.X += h_velocity;
+            position.Y += v_velocity;
         }
 
         public override void Control(GamePadState gamePadState, KeyboardState keyboardState, MouseState mouseState)

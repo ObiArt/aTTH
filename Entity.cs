@@ -66,10 +66,10 @@ namespace aTTH
                         angle = 0;
                         //TODO: make it look less awful
                         List<float> dirs = new List<float>();
-                        dirs.Add(entities[i].position.Y - (halfsize.Y + entities[i].halfsize.Y) * Params._scale);
-                        dirs.Add(entities[i].position.Y + (halfsize.Y + entities[i].halfsize.Y) * Params._scale);
-                        dirs.Add(entities[i].position.X - (halfsize.X + entities[i].halfsize.X) * Params._scale);
-                        dirs.Add(entities[i].position.X + (halfsize.X + entities[i].halfsize.X) * Params._scale);
+                        dirs.Add(entities[i].position.Y - (origin.Y + entities[i].origin.Y) * Params._scale);
+                        dirs.Add(entities[i].position.Y + (origin.Y + entities[i].origin.Y) * Params._scale);
+                        dirs.Add(entities[i].position.X - (origin.X + entities[i].origin.X) * Params._scale);
+                        dirs.Add(entities[i].position.X + (origin.X + entities[i].origin.X) * Params._scale);
 
                         int smallest = 0;
                         float diff = Math.Abs(prev_position.Y - dirs[0]);
@@ -92,11 +92,12 @@ namespace aTTH
                             }
                         }
 
-                        if (smallest == 0 || smallest == 1)
+                        if (smallest < 2)
                         {
                             v_velocity = 0;
                             position.Y = dirs[smallest];
-                            standing = true;
+                            if (smallest == 0)
+                                standing = true;
                         } else
                         {
                             h_velocity = 0;
