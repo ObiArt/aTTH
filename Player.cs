@@ -16,6 +16,11 @@ namespace aTTH
         private float gravity = 9.8f;
         private float jumpSpeed = 6f;
         private bool flying = false;
+        private short flightCount = 0;
+        /// <summary>
+        /// Used to prevent players from instantly using up all their flights
+        /// </summary>
+        private bool antiSpam = false;
         private Dictionary<string, dynamic> inputs = new Dictionary<string, dynamic>(); //dynamic is pog af
 
         public Vector2 originalhalfsize;
@@ -49,8 +54,29 @@ namespace aTTH
             if (flying)
                 flying = !standing && !collided;
 
+            if (antiSpam)
+                antiSpam = inputs["c_pressed"];
+
+            //starting to fly
+            if (inputs["c_pressed"] && !antiSpam && flightCount < 2)
+            {
+                flying = true;
+                antiSpam = true;
+                flightCount += 1;
+
+                float width = inputs["c_x"] - position.X;
+                float height = inputs["c_y"] - position.Y;
+                float distance = (float)Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
+                float steps = distance / jumpSpeed;
+                angle = (float)(Math.Atan2(inputs["c_y"] - position.Y, inputs["c_x"] - position.X) + Math.PI / 2);
+                halfsize = flyingsize;
+                v_velocity = height / steps;
+                h_velocity = width / steps;
+            }
+
             if (!flying)
             {
+                flightCount = 0;
                 //fixing collission boxes after flight
                 if (halfsize != originalhalfsize)
                 {
@@ -58,20 +84,6 @@ namespace aTTH
                 }
                 //gravity go brrr
                 v_velocity += gravity * (float)dt;
-                //starting to fly
-                if (inputs["c_pressed"])
-                {
-                    flying = true;
-
-                    float width = inputs["c_x"] - position.X;
-                    float height = inputs["c_y"] - position.Y;
-                    float distance = (float)Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
-                    float steps = distance / jumpSpeed;
-                    angle = (float)(Math.Atan2(inputs["c_y"] - position.Y, inputs["c_x"] - position.X) + Math.PI / 2);
-                    halfsize = flyingsize;
-                    v_velocity = height / steps;
-                    h_velocity = width / steps;
-                }
                 //walking
                 if (inputs["m_left"] ^ inputs["m_right"]) //we are not going anywhere if both directions are held
                 {
