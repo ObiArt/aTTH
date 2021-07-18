@@ -8,6 +8,7 @@ namespace aTTH
 {
     public class Entity
     {
+        public string name = "entity";
         public Vector2 position;
         /// <summary>
         /// Only used for moving objects, obviously
@@ -21,11 +22,15 @@ namespace aTTH
         public Single angle = 0;
         public bool standing = false;
 
+        /// <summary>
+        /// Can entity be collided with?
+        /// </summary>
         public bool collide = false;
         /// <summary>
         /// Did entity collide in the previous frame?
         /// </summary>
         public bool collided = false;
+        public string collidedWith = "";
         /// <summary>
         /// Is it important for this object to check if it collides with anything else (i.e. players, lasers)
         /// </summary>
@@ -57,12 +62,13 @@ namespace aTTH
             collided = false;
             for (int i = 0; i < entities.Count; i++)
             {
-                if (entities[i].collide)
+                if (entities[i].collide && entities[i].name != name) //same objects cannot collide with each other
                 {
                     if ((Math.Abs(position.Y - entities[i].position.Y) < (halfsize.Y + entities[i].halfsize.Y) * Params._scale) 
                         & (Math.Abs(position.X - entities[i].position.X) < (halfsize.X + entities[i].halfsize.X) * Params._scale))
                     {
                         collided = true;
+                        collidedWith = entities[i].name;
                         angle = 0;
                         //TODO: make it look less awful
                         List<float> dirs = new List<float>();

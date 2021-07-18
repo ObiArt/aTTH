@@ -28,6 +28,7 @@ namespace aTTH
 
         public Player(Vector2 pos, Texture2D texture)
         {
+            name = "player";
             position = pos;
             sprite = texture;
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
