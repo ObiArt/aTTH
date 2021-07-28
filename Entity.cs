@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace aTTH
 {
@@ -64,50 +65,34 @@ namespace aTTH
             {
                 if (entities[i].collide && entities[i].name != name) //same objects cannot collide with each other
                 {
-                    if ((Math.Abs(position.Y - entities[i].position.Y) < (halfsize.Y + entities[i].halfsize.Y) * Params._scale) 
-                        & (Math.Abs(position.X - entities[i].position.X) < (halfsize.X + entities[i].halfsize.X) * Params._scale))
+                    if ((Math.Abs(position.Y - entities[i].position.Y) < (halfsize.Y + entities[i].halfsize.Y)) 
+                        & (Math.Abs(position.X - entities[i].position.X) < (halfsize.X + entities[i].halfsize.X)))
                     {
                         collided = true;
                         collidedWith = entities[i].name;
                         angle = 0;
-                        //TODO: make it look less awful
-                        List<float> dirs = new List<float>();
-                        dirs.Add(entities[i].position.Y - (origin.Y + entities[i].origin.Y) * Params._scale);
-                        dirs.Add(entities[i].position.Y + (origin.Y + entities[i].origin.Y) * Params._scale);
-                        dirs.Add(entities[i].position.X - (origin.X + entities[i].origin.X) * Params._scale);
-                        dirs.Add(entities[i].position.X + (origin.X + entities[i].origin.X) * Params._scale);
-
-                        int smallest = 0;
-                        float diff = Math.Abs(prev_position.Y - dirs[0]);
-                        for (int u = 1; u < dirs.Count; u++) //no reason to check the first one
+                        if (prev_position.Y < entities[i].position.Y - entities[i].halfsize.Y) //Top
                         {
-                            if (u == 1)
-                            {
-                                if (Math.Abs(prev_position.Y - dirs[u]) < diff)
-                                {
-                                    smallest = u;
-                                    diff = Math.Abs(prev_position.Y - dirs[u]);
-                                }
-                            } else
-                            {
-                                if (Math.Abs(prev_position.X - dirs[u]) < diff)
-                                {
-                                    smallest = u;
-                                    diff = Math.Abs(prev_position.X - dirs[u]);
-                                }
-                            }
-                        }
-
-                        if (smallest < 2)
-                        {
+                            position.Y = entities[i].position.Y - entities[i].halfsize.Y - halfsize.Y;
                             v_velocity = 0;
-                            position.Y = dirs[smallest];
-                            if (smallest == 0)
-                                standing = true;
-                        } else
+                            standing = true;
+                            Debug.WriteLine("top");
+                        } else if (prev_position.X < entities[i].position.X - entities[i].halfsize.X) //Left
                         {
+                            position.X = entities[i].position.X - entities[i].halfsize.X - halfsize.X;
                             h_velocity = 0;
-                            position.X = dirs[smallest];
+                            Debug.WriteLine("left");
+                        } else if (prev_position.X > entities[i].position.X + entities[i].halfsize.X) //Right
+                        {
+                            position.X = entities[i].position.X + entities[i].halfsize.X + halfsize.X;
+                            h_velocity = 0;
+                            Debug.WriteLine("right");
+                        } else //Bottom
+                        //if (prev_position.Y > entities[i].position.Y + entities[i].halfsize.Y) 
+                        {
+                            position.Y = entities[i].position.Y + entities[i].halfsize.Y + halfsize.Y;
+                            v_velocity = 0;
+                            Debug.WriteLine("bottom");
                         }
                     }
                 }
@@ -116,7 +101,7 @@ namespace aTTH
 
         public virtual void Draw(SpriteBatch _spritebatch)
         {
-            _spritebatch.Draw(sprite, position, null, Color.White, angle, origin, Params._scale, SpriteEffects.None, 0);
+            _spritebatch.Draw(sprite, position, null, Color.White, angle, origin, 1, SpriteEffects.None, 0);
         }
     }
 }

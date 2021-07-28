@@ -39,7 +39,6 @@ namespace aTTH
             Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(0, 400), new Vector2(100, 20)));
             Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(150, 380), new Vector2(20, 20)));
             Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(170, 360), new Vector2(20, 20)));
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(190, 340), new Vector2(20, 20)));
             Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(190, 340), new Vector2(20, 100)));
             Entities.Add(new Player(new Vector2(300, 200), player_sprite));
             Entities.Add(new Player(new Vector2(100, 200), player_sprite));
