@@ -19,12 +19,16 @@ namespace aTTH
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
             Entities = new List<Entity>();
+
+            IsMouseVisible = true;
+            Window.AllowUserResizing = true;
+
+            Params._calculateScale(_graphics.GraphicsDevice.PresentationParameters.BackBufferWidth);
 
             base.Initialize();
         }
@@ -48,6 +52,7 @@ namespace aTTH
 
         protected override void Update(GameTime gameTime)
         {
+            Params._calculateScale(_graphics.GraphicsDevice.PresentationParameters.BackBufferWidth);
             double deltaTime = gameTime.ElapsedGameTime.TotalSeconds;
             KeyboardState keyboardState = Keyboard.GetState();
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
