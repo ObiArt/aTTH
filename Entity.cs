@@ -70,7 +70,8 @@ namespace aTTH
                         collided = true;
                         collidedWith = entities[i].name;
                         angle = 0;
-                        if (previousPosition.Y < entities[i].position.Y - entities[i].halfSize.Y) //Top
+                        //You should be moving down to fall on the floor, right?
+                        if (previousPosition.Y < entities[i].position.Y - entities[i].halfSize.Y && vVelocity >= 0) //Top
                         {
                             position.Y = entities[i].position.Y - entities[i].halfSize.Y - halfSize.Y;
                             vVelocity = 0;

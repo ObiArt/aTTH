@@ -75,6 +75,7 @@ namespace aTTH
             if (antiSpamJump)
                 antiSpamJump = inputs["m_jump"];
 
+            previousPosition = position;
             previousHVelocity = hVelocity;
             previousVVelocity = vVelocity;
 
@@ -155,8 +156,6 @@ namespace aTTH
                     antiSpamJump = true;
                 }
             }
-
-            previousPosition = position;
 
             position.X += hVelocity;
             position.Y += vVelocity;
