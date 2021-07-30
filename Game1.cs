@@ -35,11 +35,11 @@ namespace aTTH
 
             player_sprite = Content.Load<Texture2D>("player");
 
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(0, 0), new Vector2(25, 5)));
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(0, 100), new Vector2(25, 5)));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(200, 0), new Vector2(150, 5)));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(0, 100), new Vector2(200, 5)));
             Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(40, 110), new Vector2(5, 5)));
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(45, 90), new Vector2(5, 5)));
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(50, 85), new Vector2(5, 25)));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(100, 90), new Vector2(5, 100)));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(50, 85), new Vector2(200, 25)));
             Entities.Add(new Player(new Vector2(75, 50), player_sprite));
             Entities.Add(new Player(new Vector2(25, 50), player_sprite));
             Entities.Add(new Player(new Vector2(5, 50), player_sprite));
@@ -58,15 +58,15 @@ namespace aTTH
 
             for (int i = 0; i < Entities.Count; i++)
             {
-                Entities[i].Update(deltaTime);
+                if (Entities[i].collideImportant)
+                {
+                    Entities[i].CollissionCheck(Entities);
+                }
                 if (Entities[i].controlable)
                 {
                     Entities[i].Control(gamePadState, keyboardState, mouseState);
                 }
-                if (Entities[i].collide_important)
-                {
-                    Entities[i].CollissionCheck(Entities);
-                }
+                Entities[i].Update(deltaTime);
             }
 
             base.Update(gameTime);

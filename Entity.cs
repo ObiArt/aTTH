@@ -14,12 +14,11 @@ namespace aTTH
         /// <summary>
         /// Only used for moving objects, obviously
         /// </summary>
-        public Vector2 prev_position;
-        /// <summary>
-        /// Only matters for objects with collide_important
-        /// </summary>
-        public float v_velocity;
-        public float h_velocity;
+        public Vector2 previousPosition;
+        public float vVelocity;
+        public float hVelocity;
+        public float previousVVelocity;
+        public float previousHVelocity;
         public Single angle = 0;
         public bool standing = false;
 
@@ -35,12 +34,12 @@ namespace aTTH
         /// <summary>
         /// Is it important for this object to check if it collides with anything else (i.e. players, lasers)
         /// </summary>
-        public bool collide_important = false;
+        public bool collideImportant = false;
         public bool controlable = false;
 
         public Texture2D sprite;
         public Vector2 origin;
-        public Vector2 halfsize;
+        public Vector2 halfSize;
 
         public Entity()
         {
@@ -65,33 +64,33 @@ namespace aTTH
             {
                 if (entities[i].collide && entities[i].name != name) //same objects cannot collide with each other
                 {
-                    if ((Math.Abs(position.Y - entities[i].position.Y) < (halfsize.Y + entities[i].halfsize.Y)) 
-                        & (Math.Abs(position.X - entities[i].position.X) < (halfsize.X + entities[i].halfsize.X)))
+                    if ((Math.Abs(position.Y - entities[i].position.Y) < (halfSize.Y + entities[i].halfSize.Y)) 
+                        & (Math.Abs(position.X - entities[i].position.X) < (halfSize.X + entities[i].halfSize.X)))
                     {
                         collided = true;
                         collidedWith = entities[i].name;
                         angle = 0;
-                        if (prev_position.Y < entities[i].position.Y - entities[i].halfsize.Y) //Top
+                        if (previousPosition.Y < entities[i].position.Y - entities[i].halfSize.Y) //Top
                         {
-                            position.Y = entities[i].position.Y - entities[i].halfsize.Y - halfsize.Y;
-                            v_velocity = 0;
+                            position.Y = entities[i].position.Y - entities[i].halfSize.Y - halfSize.Y;
+                            vVelocity = 0;
                             standing = true;
                             //Debug.WriteLine("top");
-                        } else if (prev_position.X < entities[i].position.X - entities[i].halfsize.X) //Left
+                        } else if (previousPosition.X < entities[i].position.X - entities[i].halfSize.X) //Left
                         {
-                            position.X = entities[i].position.X - entities[i].halfsize.X - halfsize.X;
-                            h_velocity = 0;
+                            position.X = entities[i].position.X - entities[i].halfSize.X - halfSize.X;
+                            hVelocity = 0;
                             //Debug.WriteLine("left");
-                        } else if (prev_position.X > entities[i].position.X + entities[i].halfsize.X) //Right
+                        } else if (previousPosition.X > entities[i].position.X + entities[i].halfSize.X) //Right
                         {
-                            position.X = entities[i].position.X + entities[i].halfsize.X + halfsize.X;
-                            h_velocity = 0;
+                            position.X = entities[i].position.X + entities[i].halfSize.X + halfSize.X;
+                            hVelocity = 0;
                             //Debug.WriteLine("right");
                         } else //Bottom
                         //if (prev_position.Y > entities[i].position.Y + entities[i].halfsize.Y) 
                         {
-                            position.Y = entities[i].position.Y + entities[i].halfsize.Y + halfsize.Y;
-                            v_velocity = 0;
+                            position.Y = entities[i].position.Y + entities[i].halfSize.Y + halfSize.Y;
+                            vVelocity = 0;
                             //Debug.WriteLine("bottom");
                         }
                     }

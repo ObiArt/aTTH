@@ -17,14 +17,19 @@ namespace aTTH
         private float jumpSpeed = 2f;
         private bool flying = false;
         private short flightCount = 0;
+        private int flyingTimer = 0;
         /// <summary>
         /// Used to prevent players from instantly using up all their flights
         /// </summary>
-        private bool antiSpam = false;
+        private bool antiSpamFly = false;
+        /// <summary>
+        /// Used to prevent players from jumping non-stop
+        /// </summary>
+        private bool antiSpamJump = false;
         private Dictionary<string, dynamic> inputs = new Dictionary<string, dynamic>(); //dynamic is pog af
 
-        public Vector2 originalhalfsize;
-        public Vector2 flyingsize;
+        public Vector2 originalHalfSize;
+        public Vector2 flyingSize;
 
         public Player(Vector2 pos, Texture2D texture)
         {
@@ -32,12 +37,10 @@ namespace aTTH
             position = pos;
             sprite = texture;
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            originalhalfsize = new Vector2(texture.Width / 2, texture.Height / 2);
-            halfsize = originalhalfsize;
-            flyingsize = new Vector2(originalhalfsize.X, originalhalfsize.X); //not a typo - it's intended to be this way
+            halfSize = new Vector2(texture.Width / 2, texture.Height / 2);
 
             collide = false;
-            collide_important = true;
+            collideImportant = true;
             controlable = true;
 
             inputs.Add("m_left", false);
@@ -50,19 +53,34 @@ namespace aTTH
 
         public override void Update(double dt)
         {
-            prev_position = position;
-
             if (flying)
+            {
                 flying = !standing && !collided;
 
-            if (antiSpam)
-                antiSpam = inputs["c_pressed"];
+                if (standing && flyingTimer < 2)
+                {
+                    position = previousPosition;
+                    hVelocity = previousHVelocity;
+                    vVelocity = previousVVelocity;
+                    position.X += hVelocity;
+                    position.Y += vVelocity;
+                }
+
+                flyingTimer++;
+            }
+                
+
+            if (antiSpamFly)
+                antiSpamFly = inputs["c_pressed"];
+
+            previousHVelocity = hVelocity;
+            previousVVelocity = vVelocity;
 
             //starting to fly
-            if (inputs["c_pressed"] && !antiSpam && flightCount < 2)
+            if (inputs["c_pressed"] && !antiSpamFly && flightCount < 1)
             {
                 flying = true;
-                antiSpam = true;
+                antiSpamFly = true;
                 flightCount += 1;
 
                 float width = inputs["c_x"] - position.X;
@@ -70,78 +88,85 @@ namespace aTTH
                 float distance = (float)Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
                 float steps = distance / jumpSpeed;
                 angle = (float)(Math.Atan2(inputs["c_y"] - position.Y, inputs["c_x"] - position.X) + Math.PI / 2);
-                halfsize = flyingsize;
-                v_velocity = height / steps;
-                h_velocity = width / steps;
+                vVelocity = height / steps;
+                hVelocity = width / steps;
             }
 
             if (!flying)
             {
-                //fixing collission boxes after flight
-                if (halfsize != originalhalfsize)
-                {
-                    halfsize = originalhalfsize;
-                }
+                flyingTimer = 0;
                 //gravity go brrr
-                v_velocity += gravity * (float)dt;
+                vVelocity += gravity * (float)dt;
                 //walking
                 if (inputs["m_left"] ^ inputs["m_right"]) //we are not going anywhere if both directions are held
                 {
                     if (inputs["m_left"])
                     {
-                        h_velocity -= acceleration * (float)dt;
+                        hVelocity -= acceleration * (float)dt;
                     }
                     else
                     {
-                        h_velocity += acceleration * (float)dt;
+                        hVelocity += acceleration * (float)dt;
                     }
                 }
                 //Deceleration
-                else if (h_velocity != 0)
+                else if (hVelocity != 0)
                 {
                     float reduction = decceleration * (float)dt;
-                    if (reduction >= Math.Abs(h_velocity))
+                    if (reduction >= Math.Abs(hVelocity))
                     {
-                        h_velocity = 0f;
+                        hVelocity = 0f;
                     }
                     else
                     {
-                        if (h_velocity > 0)
+                        if (hVelocity > 0)
                         {
-                            h_velocity -= reduction;
+                            hVelocity -= reduction;
                         }
                         else
                         {
-                            h_velocity += reduction;
+                            hVelocity += reduction;
                         }
                     }
                 }
                 //Not allowing player to move too fast
-                if (v_velocity > maxFallSpeed)
+                if (vVelocity > maxFallSpeed)
                 {
-                    v_velocity = maxFallSpeed;
+                    vVelocity = maxFallSpeed;
                 }
-                if (Math.Abs(h_velocity) > maxWalkSpeed)
+                if (Math.Abs(hVelocity) > maxWalkSpeed)
                 {
-                    if (h_velocity > 0)
-                        h_velocity = maxWalkSpeed;
+                    if (hVelocity > 0)
+                        hVelocity = maxWalkSpeed;
                     else
-                        h_velocity = maxWalkSpeed * -1;
+                        hVelocity = maxWalkSpeed * -1;
                 }
             }
 
             if (standing)
             {
                 flightCount = 0;
-                if (inputs["m_jump"])
+                if (inputs["m_jump"] && !antiSpamJump)
                 {
-                    v_velocity = jumpSpeed * -1;
+                    vVelocity = jumpSpeed * -1;
                     standing = false;
+                    antiSpamJump = true;
                 }
             }
 
-            position.X += h_velocity;
-            position.Y += v_velocity;
+            if (inputs["m_jump"])
+            {
+                antiSpamJump = true;
+            }
+            else
+            {
+                antiSpamJump = false;
+            }
+
+            previousPosition = position;
+
+            position.X += hVelocity;
+            position.Y += vVelocity;
         }
 
         public override void Control(GamePadState gamePadState, KeyboardState keyboardState, MouseState mouseState)
