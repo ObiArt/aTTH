@@ -35,15 +35,15 @@ namespace aTTH
 
             player_sprite = Content.Load<Texture2D>("player");
 
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(0, 0), new Vector2(100, 20)));
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(0, 400), new Vector2(100, 20)));
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(150, 380), new Vector2(20, 20)));
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(170, 360), new Vector2(20, 20)));
-            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(190, 340), new Vector2(20, 100)));
-            Entities.Add(new Player(new Vector2(300, 200), player_sprite));
-            Entities.Add(new Player(new Vector2(100, 200), player_sprite));
-            Entities.Add(new Player(new Vector2(25, 200), player_sprite));
-            Entities.Add(new Player(new Vector2(200, 200), player_sprite));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(0, 0), new Vector2(25, 5)));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(0, 100), new Vector2(25, 5)));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(40, 110), new Vector2(5, 5)));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(45, 90), new Vector2(5, 5)));
+            Entities.Add(new Wall(_graphics.GraphicsDevice, new Vector2(50, 85), new Vector2(5, 25)));
+            Entities.Add(new Player(new Vector2(75, 50), player_sprite));
+            Entities.Add(new Player(new Vector2(25, 50), player_sprite));
+            Entities.Add(new Player(new Vector2(5, 50), player_sprite));
+            Entities.Add(new Player(new Vector2(50, 50), player_sprite));
         }
 
         protected override void Update(GameTime gameTime)

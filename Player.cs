@@ -9,12 +9,12 @@ namespace aTTH
 {
     public class Player : Entity
     {
-        private float maxWalkSpeed = 4f;
-        private float acceleration = 15f;
-        private float decceleration = 20f;
-        private float maxFallSpeed = 10.0f;
-        private float gravity = 9.8f;
-        private float jumpSpeed = 6f;
+        private float maxWalkSpeed = 1f;
+        private float acceleration = 4f;
+        private float decceleration = 5;
+        private float maxFallSpeed = 2.5f;
+        private float gravity = 3f;
+        private float jumpSpeed = 2f;
         private bool flying = false;
         private short flightCount = 0;
         /// <summary>
@@ -148,11 +148,11 @@ namespace aTTH
         {
             inputs["m_left"] = keyboardState.IsKeyDown(Keys.Left) || gamePadState.IsButtonDown(Buttons.DPadLeft);
             inputs["m_right"] = keyboardState.IsKeyDown(Keys.Right) || gamePadState.IsButtonDown(Buttons.DPadRight);
+            inputs["c_pressed"] = mouseState.LeftButton == ButtonState.Pressed || gamePadState.Triggers.Right > 0.5f;
             //TODO: gamepad support 
             inputs["m_jump"] = keyboardState.IsKeyDown(Keys.Up);
-            inputs["c_x"] = mouseState.X;
-            inputs["c_y"] = mouseState.Y;
-            inputs["c_pressed"] = mouseState.LeftButton == ButtonState.Pressed || gamePadState.Triggers.Right > 0.5f;
+            inputs["c_x"] = mouseState.X / Params._scale;
+            inputs["c_y"] = mouseState.Y / Params._scale;
         }
     }
 }

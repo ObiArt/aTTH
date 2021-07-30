@@ -76,23 +76,23 @@ namespace aTTH
                             position.Y = entities[i].position.Y - entities[i].halfsize.Y - halfsize.Y;
                             v_velocity = 0;
                             standing = true;
-                            Debug.WriteLine("top");
+                            //Debug.WriteLine("top");
                         } else if (prev_position.X < entities[i].position.X - entities[i].halfsize.X) //Left
                         {
                             position.X = entities[i].position.X - entities[i].halfsize.X - halfsize.X;
                             h_velocity = 0;
-                            Debug.WriteLine("left");
+                            //Debug.WriteLine("left");
                         } else if (prev_position.X > entities[i].position.X + entities[i].halfsize.X) //Right
                         {
                             position.X = entities[i].position.X + entities[i].halfsize.X + halfsize.X;
                             h_velocity = 0;
-                            Debug.WriteLine("right");
+                            //Debug.WriteLine("right");
                         } else //Bottom
                         //if (prev_position.Y > entities[i].position.Y + entities[i].halfsize.Y) 
                         {
                             position.Y = entities[i].position.Y + entities[i].halfsize.Y + halfsize.Y;
                             v_velocity = 0;
-                            Debug.WriteLine("bottom");
+                            //Debug.WriteLine("bottom");
                         }
                     }
                 }
@@ -101,7 +101,7 @@ namespace aTTH
 
         public virtual void Draw(SpriteBatch _spritebatch)
         {
-            _spritebatch.Draw(sprite, position, null, Color.White, angle, origin, 1, SpriteEffects.None, 0);
+            _spritebatch.Draw(sprite, Vector2.Multiply(position, Params._scale), null, Color.White, angle, origin, Params._scale, SpriteEffects.None, 0);
         }
     }
 }
