@@ -67,11 +67,13 @@ namespace aTTH
                 }
 
                 flyingTimer++;
-            }
-                
+            }  
 
             if (antiSpamFly)
                 antiSpamFly = inputs["c_pressed"];
+
+            if (antiSpamJump)
+                antiSpamJump = inputs["m_jump"];
 
             previousHVelocity = hVelocity;
             previousVVelocity = vVelocity;
@@ -152,15 +154,6 @@ namespace aTTH
                     standing = false;
                     antiSpamJump = true;
                 }
-            }
-
-            if (inputs["m_jump"])
-            {
-                antiSpamJump = true;
-            }
-            else
-            {
-                antiSpamJump = false;
             }
 
             previousPosition = position;
