@@ -53,6 +53,7 @@ namespace aTTH
 
         public override void Update(double dt)
         {
+            float framerateScale = (float)dt / (1f / 60f);
             if (flying)
             {
                 flying = !standing && !collided;
@@ -62,8 +63,8 @@ namespace aTTH
                     position = previousPosition;
                     hVelocity = previousHVelocity;
                     vVelocity = previousVVelocity;
-                    position.X += hVelocity;
-                    position.Y += vVelocity;
+                    position.X += hVelocity * framerateScale;
+                    position.Y += vVelocity * framerateScale;
                 }
 
                 flyingTimer++;
@@ -71,9 +72,6 @@ namespace aTTH
 
             if (antiSpamFly)
                 antiSpamFly = inputs["c_pressed"];
-
-            if (antiSpamJump)
-                antiSpamJump = inputs["m_jump"];
 
             previousPosition = position;
             previousHVelocity = hVelocity;
@@ -148,6 +146,9 @@ namespace aTTH
 
             if (standing)
             {
+                if (antiSpamJump)
+                    antiSpamJump = inputs["m_jump"];
+
                 flightCount = 0;
                 if (inputs["m_jump"] && !antiSpamJump)
                 {
@@ -157,8 +158,8 @@ namespace aTTH
                 }
             }
 
-            position.X += hVelocity;
-            position.Y += vVelocity;
+            position.X += hVelocity * framerateScale;
+            position.Y += vVelocity * framerateScale;
         }
 
         public override void Control(GamePadState gamePadState, KeyboardState keyboardState, MouseState mouseState)
