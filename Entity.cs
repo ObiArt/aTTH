@@ -39,7 +39,6 @@ namespace aTTH
 
         public Texture2D sprite;
         public Vector2 origin;
-        public Vector2 halfSize;
 
         public Entity()
         {
@@ -64,33 +63,33 @@ namespace aTTH
             {
                 if (entities[i].collide && entities[i].name != name) //same objects cannot collide with each other
                 {
-                    if ((Math.Abs(position.Y - entities[i].position.Y) < (halfSize.Y + entities[i].halfSize.Y)) 
-                        & (Math.Abs(position.X - entities[i].position.X) < (halfSize.X + entities[i].halfSize.X)))
+                    if ((Math.Abs(position.Y - entities[i].position.Y) < (origin.Y + entities[i].origin.Y)) 
+                        & (Math.Abs(position.X - entities[i].position.X) < (origin.X + entities[i].origin.X)))
                     {
                         collided = true;
                         collidedWith = entities[i].name;
                         angle = 0;
                         //You should be moving down to fall on the floor, right?
-                        if (previousPosition.Y < entities[i].position.Y - entities[i].halfSize.Y && vVelocity >= 0) //Top
+                        if (previousPosition.Y < entities[i].position.Y - entities[i].origin.Y && vVelocity >= 0) //Top
                         {
-                            position.Y = entities[i].position.Y - entities[i].halfSize.Y - halfSize.Y;
+                            position.Y = entities[i].position.Y - entities[i].origin.Y - origin.Y;
                             vVelocity = 0;
                             standing = true;
                             //Debug.WriteLine("top");
-                        } else if (previousPosition.X < entities[i].position.X - entities[i].halfSize.X) //Left
+                        } else if (previousPosition.X < entities[i].position.X - entities[i].origin.X) //Left
                         {
-                            position.X = entities[i].position.X - entities[i].halfSize.X - halfSize.X;
+                            position.X = entities[i].position.X - entities[i].origin.X - origin.X;
                             hVelocity = 0;
                             //Debug.WriteLine("left");
-                        } else if (previousPosition.X > entities[i].position.X + entities[i].halfSize.X) //Right
+                        } else if (previousPosition.X > entities[i].position.X + entities[i].origin.X) //Right
                         {
-                            position.X = entities[i].position.X + entities[i].halfSize.X + halfSize.X;
+                            position.X = entities[i].position.X + entities[i].origin.X + origin.X;
                             hVelocity = 0;
                             //Debug.WriteLine("right");
                         } else //Bottom
-                        //if (prev_position.Y > entities[i].position.Y + entities[i].halfsize.Y) 
+                        //if (prev_position.Y > entities[i].position.Y + entities[i].origin.Y) 
                         {
-                            position.Y = entities[i].position.Y + entities[i].halfSize.Y + halfSize.Y;
+                            position.Y = entities[i].position.Y + entities[i].origin.Y + origin.Y;
                             vVelocity = 0;
                             //Debug.WriteLine("bottom");
                         }

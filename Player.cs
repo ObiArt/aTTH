@@ -37,7 +37,6 @@ namespace aTTH
             position = pos;
             sprite = texture;
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            halfSize = new Vector2(texture.Width / 2, texture.Height / 2);
 
             collide = false;
             collideImportant = true;
