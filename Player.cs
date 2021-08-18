@@ -11,7 +11,7 @@ namespace aTTH
     {
         private float maxWalkSpeed = 1f;
         private float acceleration = 4f;
-        private float decceleration = 5;
+        private float decceleration = 7f;
         private float maxFallSpeed = 2.5f;
         private float gravity = 3f;
         private float jumpSpeed = 2f;
@@ -28,15 +28,20 @@ namespace aTTH
         private bool antiSpamJump = false;
         private Dictionary<string, dynamic> inputs = new Dictionary<string, dynamic>(); //dynamic is pog af
 
-        public Vector2 originalHalfSize;
+        private float cursorDistance = 30f;
+        public Texture2D cursorSprite;
+        public Vector2 cursorOrigin;
+
         public Vector2 flyingSize;
 
-        public Player(Vector2 pos, Texture2D texture)
+        public Player(Vector2 pos, Texture2D texture, Texture2D cursorTexture)
         {
             name = "player";
             position = pos;
             sprite = texture;
+            cursorSprite = cursorTexture;
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
+            cursorOrigin = new Vector2(cursorTexture.Width / 2, cursorTexture.Height / 2);
 
             collide = false;
             collideImportant = true;
@@ -163,13 +168,37 @@ namespace aTTH
 
         public override void Control(GamePadState gamePadState, KeyboardState keyboardState, MouseState mouseState)
         {
-            inputs["m_left"] = keyboardState.IsKeyDown(Keys.Left) || gamePadState.IsButtonDown(Buttons.DPadLeft);
-            inputs["m_right"] = keyboardState.IsKeyDown(Keys.Right) || gamePadState.IsButtonDown(Buttons.DPadRight);
+            Debug.Print(gamePadState.ThumbSticks.Left.X.ToString());
+            inputs["m_left"] = keyboardState.IsKeyDown(Keys.Left) || gamePadState.IsButtonDown(Buttons.DPadLeft)
+                || gamePadState.ThumbSticks.Left.X < Params._movementDeadzone * -1;
+            inputs["m_right"] = keyboardState.IsKeyDown(Keys.Right) || gamePadState.IsButtonDown(Buttons.DPadRight)
+                || gamePadState.ThumbSticks.Left.X > Params._movementDeadzone; ;
             inputs["c_pressed"] = mouseState.LeftButton == ButtonState.Pressed || gamePadState.Triggers.Right > 0.5f;
-            //TODO: gamepad support 
-            inputs["m_jump"] = keyboardState.IsKeyDown(Keys.Up);
-            inputs["c_x"] = mouseState.X / Params._scale;
-            inputs["c_y"] = mouseState.Y / Params._scale;
+            inputs["m_jump"] = keyboardState.IsKeyDown(Keys.Up) || gamePadState.IsButtonDown(Buttons.A);
+            if (Params._gamepadUsed)
+            {
+                if (Math.Abs(gamePadState.ThumbSticks.Right.X) > Params._lookingDeadzone)
+                    inputs["c_x"] = position.X + gamePadState.ThumbSticks.Right.X * cursorDistance;
+                else
+                    inputs["c_x"] = position.X;
+
+                if (Math.Abs(gamePadState.ThumbSticks.Right.Y) > Params._lookingDeadzone)
+                    inputs["c_y"] = position.Y + gamePadState.ThumbSticks.Right.Y * cursorDistance * -1;
+                else
+                    inputs["c_y"] = position.Y;
+
+                Debug.Print(gamePadState.ThumbSticks.Right.X.ToString() + ":" + gamePadState.ThumbSticks.Right.Y.ToString());
+            } else
+            {
+                inputs["c_x"] = mouseState.X / Params._scale;
+                inputs["c_y"] = mouseState.Y / Params._scale;
+            }
+        }
+
+        public override void Draw(SpriteBatch _spritebatch)
+        {
+            _spritebatch.Draw(sprite, Vector2.Multiply(position, Params._scale), null, Color.White, angle, origin, Params._scale, SpriteEffects.None, 0);
+            _spritebatch.Draw(cursorSprite, Vector2.Multiply(new Vector2(inputs["c_x"], inputs["c_y"]), Params._scale), null, Color.White, 0f, cursorOrigin, Params._scale, SpriteEffects.None, 0);
         }
     }
 }
