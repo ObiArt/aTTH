@@ -14,7 +14,7 @@ namespace aTTH
         private float decceleration = 7f;
         private float maxFallSpeed = 2.5f;
         private float gravity = 3f;
-        private float jumpSpeed = 2f;
+        private float jumpSpeed = 1.5f;
         private bool flying = false;
         private short flightCount = 0;
         private int flyingTimer = 0;
