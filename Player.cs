@@ -72,7 +72,7 @@ namespace aTTH
                 }
 
                 flyingTimer++;
-            }  
+            }
 
             if (antiSpamFly)
                 antiSpamFly = inputs["c_pressed"];
@@ -177,18 +177,12 @@ namespace aTTH
             inputs["m_jump"] = keyboardState.IsKeyDown(Keys.Up) || gamePadState.IsButtonDown(Buttons.A);
             if (Params._gamepadUsed)
             {
-                if (Math.Abs(gamePadState.ThumbSticks.Right.X) > Params._lookingDeadzone)
-                    inputs["c_x"] = position.X + gamePadState.ThumbSticks.Right.X * cursorDistance;
-                else
-                    inputs["c_x"] = position.X;
-
-                if (Math.Abs(gamePadState.ThumbSticks.Right.Y) > Params._lookingDeadzone)
-                    inputs["c_y"] = position.Y + gamePadState.ThumbSticks.Right.Y * cursorDistance * -1;
-                else
-                    inputs["c_y"] = position.Y;
+                inputs["c_x"] = position.X + gamePadState.ThumbSticks.Right.X * cursorDistance;
+                inputs["c_y"] = position.Y + gamePadState.ThumbSticks.Right.Y * cursorDistance * -1;
 
                 Debug.Print(gamePadState.ThumbSticks.Right.X.ToString() + ":" + gamePadState.ThumbSticks.Right.Y.ToString());
-            } else
+            }
+            else
             {
                 inputs["c_x"] = mouseState.X / Params._scale;
                 inputs["c_y"] = mouseState.Y / Params._scale;
@@ -198,7 +192,9 @@ namespace aTTH
         public override void Draw(SpriteBatch _spritebatch)
         {
             _spritebatch.Draw(sprite, Vector2.Multiply(position, Params._scale), null, Color.White, angle, origin, Params._scale, SpriteEffects.None, 0);
-            _spritebatch.Draw(cursorSprite, Vector2.Multiply(new Vector2(inputs["c_x"], inputs["c_y"]), Params._scale), null, Color.White, 0f, cursorOrigin, Params._scale, SpriteEffects.None, 0);
+            Vector2 cursorPosition = new Vector2(inputs["c_x"], inputs["c_y"]);
+            float cursorOpacity = (Vector2.Distance(cursorPosition, position) + 1) / cursorDistance * 2 + 0.25f;
+            _spritebatch.Draw(cursorSprite, Vector2.Multiply(cursorPosition, Params._scale), null, Color.White * cursorOpacity, 0f, cursorOrigin, Params._scale, SpriteEffects.None, 0);
         }
     }
 }
