@@ -15,6 +15,7 @@ namespace aTTH
         private float maxFallSpeed = 2.5f;
         private float gravity = 3f;
         private float jumpSpeed = 1.5f;
+        private float flyingSpeed = 2.0f;
         private bool flying = false;
         private short flightCount = 0;
         private int flyingTimer = 0;
@@ -28,6 +29,9 @@ namespace aTTH
         private bool antiSpamJump = false;
         private Dictionary<string, dynamic> inputs = new Dictionary<string, dynamic>(); //dynamic is pog af
 
+        /// <summary>
+        /// Maximum distance cursor can be away from the player when using gamepad
+        /// </summary>
         private float cursorDistance = 30f;
         public Texture2D cursorSprite;
         public Vector2 cursorOrigin;
@@ -90,8 +94,8 @@ namespace aTTH
 
                 float width = inputs["c_x"] - position.X;
                 float height = inputs["c_y"] - position.Y;
-                float distance = (float)Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
-                float steps = distance / jumpSpeed;
+                float distance = Vector2.Distance(new Vector2(inputs["c_x"], inputs["c_y"]), position);
+                float steps = distance / flyingSpeed;
                 angle = (float)(Math.Atan2(inputs["c_y"] - position.Y, inputs["c_x"] - position.X) + Math.PI / 2);
                 vVelocity = height / steps;
                 hVelocity = width / steps;
@@ -168,7 +172,6 @@ namespace aTTH
 
         public override void Control(GamePadState gamePadState, KeyboardState keyboardState, MouseState mouseState)
         {
-            Debug.Print(gamePadState.ThumbSticks.Left.X.ToString());
             inputs["m_left"] = keyboardState.IsKeyDown(Keys.Left) || gamePadState.IsButtonDown(Buttons.DPadLeft)
                 || gamePadState.ThumbSticks.Left.X < Params._movementDeadzone * -1;
             inputs["m_right"] = keyboardState.IsKeyDown(Keys.Right) || gamePadState.IsButtonDown(Buttons.DPadRight)
@@ -179,8 +182,6 @@ namespace aTTH
             {
                 inputs["c_x"] = position.X + gamePadState.ThumbSticks.Right.X * cursorDistance;
                 inputs["c_y"] = position.Y + gamePadState.ThumbSticks.Right.Y * cursorDistance * -1;
-
-                Debug.Print(gamePadState.ThumbSticks.Right.X.ToString() + ":" + gamePadState.ThumbSticks.Right.Y.ToString());
             }
             else
             {
