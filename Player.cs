@@ -50,12 +50,14 @@ namespace aTTH
             collide = false;
             collideImportant = true;
             controlable = true;
-
+            
+            //m - movement
             inputs.Add("m_left", false);
             inputs.Add("m_right", false);
             inputs.Add("m_jump", false);
-            inputs.Add("c_x", 0);
-            inputs.Add("c_y", 0);
+            //c - cursor
+            inputs.Add("c_x", position.X);
+            inputs.Add("c_y", position.Y);
             inputs.Add("c_pressed", false);
         }
 
@@ -86,7 +88,8 @@ namespace aTTH
             previousVVelocity = vVelocity;
 
             //starting to fly
-            if (inputs["c_pressed"] && !antiSpamFly && flightCount < 1)
+            if (inputs["c_pressed"] && !antiSpamFly && flightCount < 1
+                && inputs["c_x"] != position.X && inputs["c_y"] != position.Y)
             {
                 flying = true;
                 antiSpamFly = true;
@@ -180,8 +183,17 @@ namespace aTTH
             inputs["m_jump"] = keyboardState.IsKeyDown(Keys.Up) || gamePadState.IsButtonDown(Buttons.A);
             if (Params._gamepadUsed)
             {
-                inputs["c_x"] = position.X + gamePadState.ThumbSticks.Right.X * cursorDistance;
-                inputs["c_y"] = position.Y + gamePadState.ThumbSticks.Right.Y * cursorDistance * -1;
+                if (Math.Abs(gamePadState.ThumbSticks.Right.X) > Params._lookingDeadzone ||
+                    Math.Abs(gamePadState.ThumbSticks.Right.Y) > Params._lookingDeadzone)
+                {
+                    inputs["c_x"] = position.X + gamePadState.ThumbSticks.Right.X * cursorDistance;
+                    inputs["c_y"] = position.Y + gamePadState.ThumbSticks.Right.Y * cursorDistance * -1;
+                } 
+                else
+                {
+                    inputs["c_x"] = position.X;
+                    inputs["c_y"] = position.Y;
+                }
             }
             else
             {
